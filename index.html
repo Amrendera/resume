@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLDWMS</title>
+    <style>
+        body {
+            margin: 0;
+            background-image: linear-gradient(to bottom, #FCE38A 0%, #F38181 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #cfb991;
+            color: #383333;
+        }
+
+        .navbar img {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .navbar .message {
+            text-align: center;
+            flex-grow: 1;
+            font-size: 1em;
+        }
+
+        .container {
+            margin-top: 50px;
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .alert {
+            background-color: #ffffff;
+            color: #333;
+            border: 2px solid #383333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            max-width: 300px;
+            font-size: 1em;
+        }
+
+        .weight-level {
+            margin: 50px;
+            background-color: #ffffff;
+            color: #333;
+            border: 2px solid #383333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            max-width: 300px;
+            font-size: 1em;
+        }
+
+        .weight-level .progress-bar {
+            background-color: #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .weight-level .progress-bar div {
+            background-color: #F38181;
+            height: 20px;
+            width: 0%; 
+        }
+
+        .control-box {
+            background-color: #ffffff;
+            color: #333;
+            border: 2px solid #383333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            max-width: 300px;
+            font-size: 1em;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        footer {
+            padding: 50PX;
+            margin-top: 100PX;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: linear-gradient(to bottom, #FCE38A, #F38181); 
+            color: #dfdada;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        
+        @media (max-width: 600px) {
+            .alert,
+            .weight-level,
+            .control-box {
+                width: 80%;
+                max-width: none; 
+                padding: 10px; }
+
+            .weight-level .progress-bar div {
+                height: 15px; 
+            }
+
+            .navbar {
+                padding: 5px; 
+            }
+
+            button {
+                font-size: 0.8em; 
+                padding: 8px 15px; }
+
+            .container {
+                padding: 10px; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="user-icon">
+            <img src="user-icon.png" alt="User Icon" />
+        </div>
+        <div class="message">
+            <h1>WELCOME</h1>
+        </div>
+        <div class="menu-toggle" id="menuToggle">
+            <img src="menu-icon.png" alt="Menu Icon" />
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="alert" id="alertBox">
+            <h2>Important Message!</h2>
+            <p>This is your alert message in a square box.</p>
+        </div>
+
+        <div class="weight-level">
+            <h2>Weight Level</h2>
+            <div class="progress-bar">
+                <div id="weightProgressBar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <div class="control-box">
+            <h2>Servo Motor Control</h2>
+            <button id="onButton">On</button>
+            <button id="offButton">Off</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 GLDWMS. All rights reserved.</p>
+    </footer>
+    <script>
+       
+    document.addEventListener("DOMContentLoaded", function() {
+        const templateId = "TMPL3VbYZrPVy"; // Replace with your Blynk template ID
+        const authToken = "PpcU82eFsM6l6n7NxIPGN2XCxkuKSlq0"; // Replace with your Blynk authentication token
+        const baseUrl = `https://blynk.cloud/external/api/${templateId}/`;
+
+        const onButton = document.getElementById("onButton");
+        const offButton = document.getElementById("offButton");
+        const weightProgressBar = document.getElementById("weightProgressBar");
+        const alertBox = document.getElementById("alertBox");
+
+        onButton.addEventListener("click", function() {
+            fetch(`${baseUrl}update/V1?value=1&token=${authToken}`)
+                .then(response => response.ok ? console.log("Servo motor turned ON.") : console.error("Error turning on servo motor."));
+        });
+
+        offButton.addEventListener("click", function() {
+            fetch(`${baseUrl}update/V1?value=0&token=${authToken}`)
+                .then(response => response.ok ? console.log("Servo motor turned OFF.") : console.error("Error turning off servo motor."));
+        });
+
+        function updateWeight() {
+            fetch(`${baseUrl}get/V2?token=${authToken}`)
+                .then(response => response.json())
+                .then(data => {
+                    const weight = parseFloat(data);
+                    const weightPercent = (weight / 100) * 100;
+                    weightProgressBar.style.width = `${weightPercent}%`;
+
+                    if (weight < 10) {
+                        alertBox.innerHTML = `<h2>Alert!</h2><p>Low weight detected! Please check the cylinder.</p>`;
+                    }
+                })
+                .catch(err => console.error("Error fetching weight:", err));
+        }
+
+        setInterval(updateWeight, 5000);
+
+        const menuToggle = document.getElementById("menuToggle");
+        let menuVisible = false;
+
+        menuToggle.addEventListener("click", function() {
+            menuVisible = !menuVisible;
+            console.log("Menu toggle clicked. Menu visible:", menuVisible);
+        });
+
+        alertBox.addEventListener("click", function() {
+            alertBox.innerHTML = `<h2>New Alert!</h2><p>This alert box changed because you clicked on it.</p>`;
+        });
+    });
+    </script>
+</body>
+</html>
